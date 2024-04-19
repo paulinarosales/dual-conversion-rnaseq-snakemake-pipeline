@@ -34,24 +34,24 @@ def _params_trim_galore(wildcards):
 
 rule trim_galore:
     input:
-        fq_1 = 'resources/fastq_seq/merged/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_R1.fq.gz',
-        fq_2 = 'resources/fastq_seq/merged/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_R2.fq.gz'
+        fq_1 = 'resources/fastq_seq/merged/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R1.fq.gz',
+        fq_2 = 'resources/fastq_seq/merged/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R2.fq.gz'
     output:
-        out_dir = directory('results/fastq/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}'),
-        fastqc_dir = directory('results/quality_control/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}'),
-        report1 = 'results/fastq/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_R1.fq.gz_trimming_report.txt',
-        report2 = 'results/fastq/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_R2.fq.gz_trimming_report.txt',
-        fq1 = 'results/fastq/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_val_1.fq.gz',
-        fq2 = 'results/fastq/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_val_2.fq.gz'
+        out_dir = directory('results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}'),
+        fastqc_dir = directory('results/quality_control/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}'),
+        report1 = 'results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R1.fq.gz_trimming_report.txt',
+        report2 = 'results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R2.fq.gz_trimming_report.txt',
+        fq1 = 'results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_val_1.fq.gz',
+        fq2 = 'results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_val_2.fq.gz'
     threads: 20
     resources:
         mem_mb = 7000
     conda:
         '../../envs/pre_processing/trim-galore.yaml'
     log: 
-        'logs/trim_galore/{sample_type}_{treatment}_Bio-rep_{bio_rep}.log'
+        'logs/trim_galore/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.log'
     params:
-        basename = '{sample_type}_{treatment}_Bio-rep_{bio_rep}',
+        basename = '{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}',
         quality = _params_trim_galore,
         clip_5 = config['TRIM_GALORE']['CLIP_5'],
         clip_3 = config['TRIM_GALORE']['CLIP_3'],
@@ -68,11 +68,11 @@ rule trim_galore:
 
 rule unzip_trim:
     input:
-        fq1_gz = 'results/fastq/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_val_1.fq.gz',
-        fq2_gz = 'results/fastq/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_val_2.fq.gz'
+        fq1_gz = 'results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_val_1.fq.gz',
+        fq2_gz = 'results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_val_2.fq.gz'
     output:
-        fq1 = temp('results/fastq/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_val_1.fq'),
-        fq2 = temp('results/fastq/trimmed/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_val_2.fq')
+        fq1 = temp('results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_val_1.fq'),
+        fq2 = temp('results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_val_2.fq')
     shell:
         """
              gzip -dc {input.fq1_gz} > {output.fq1} &&

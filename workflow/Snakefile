@@ -111,30 +111,30 @@ for sample_type, treatment, bio_rep in SAMPLES.index:
         if SAMPLES.loc[(sample_type, treatment, bio_rep), SUBSET_COLUMN] == config['SUBSET_VALUE']:
             # --------- Raw procesing
             TARGETS['raw_seq'].append(str(FASTQ_DIR / 'raw'/ f'{identifier}_S{handle}_L001_R2_001.fastq.gz'))
-            TARGETS['merged_fq'].append(str(FASTQ_DIR / 'merged'/ f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}_R2.fq.gz'))
-            TARGETS['trimmed'].append(str(RESULTS_DIR / 'fastq' / 'trimmed' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}_R1.fq.gz_trimming_report.txt'))
+            TARGETS['merged_fq'].append(str(FASTQ_DIR / 'merged'/ f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R2.fq.gz'))
+            TARGETS['trimmed'].append(str(RESULTS_DIR / 'fastq' / 'trimmed' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R1.fq.gz_trimming_report.txt'))
             # --------- Downstream analysis
 
     else:
             # --------- Raw procesing
             TARGETS['raw_seq'].append(str(FASTQ_DIR / 'raw'/ f'{identifier}_S{handle}_L001_R2_001.fastq.gz'))
-            TARGETS['merged_fq'].append(str(FASTQ_DIR / 'merged'/ f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}_R2.fq.gz'))
-            TARGETS['fastqc_raw'].append(expand('results/quality_control/raw_fastq/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_R{read}_fastqc.html', sample_type=sample_type, treatment=treatment, bio_rep=bio_rep, read=[1,2]))
-            TARGETS['trimmed'].append(str(RESULTS_DIR / 'fastq' / 'trimmed' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}_R1.fq.gz_trimming_report.txt'))
-            TARGETS['hisat3n'].append(str(RESULTS_DIR / 'sam_files' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sam'))
-            TARGETS['samtools_sort'].append(str(RESULTS_DIR / 'sam_files' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam'))
-            TARGETS['hisat3n_tab'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_tab.tsv'))
+            TARGETS['merged_fq'].append(str(FASTQ_DIR / 'merged'/ f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R2.fq.gz'))
+            TARGETS['fastqc_raw'].append(expand('results/quality_control/raw_fastq/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R{read}_fastqc.html', sample_type=sample_type, treatment=treatment, chase_time_h=chase_time_h, bio_rep=bio_rep, read=[1,2]))
+            TARGETS['trimmed'].append(str(RESULTS_DIR / 'fastq' / 'trimmed' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R1.fq.gz_trimming_report.txt'))
+            TARGETS['hisat3n'].append(str(RESULTS_DIR / 'sam_files' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sam'))
+            TARGETS['samtools_sort'].append(str(RESULTS_DIR / 'sam_files' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam'))
+            TARGETS['hisat3n_tab'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_tab.tsv'))
             # --------- Downstream analysis
-            TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.stats'))
-            TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.idxstats'))
-            TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.flagstat'))
-            TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.coverage'))
-            TARGETS['featureCounts'].append(str(RESULTS_DIR / 'counts' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}_genecounts.tsv'))
-            TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}_conversionCounts.tsv'))
-            TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}_conversionCounts.mergedFeatures.tsv'))
-            TARGETS['conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}_conversionRates.tsv'))
+            TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.stats'))
+            TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.idxstats'))
+            TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.flagstat'))
+            TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.coverage'))
+            TARGETS['featureCounts'].append(str(RESULTS_DIR / 'counts' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_genecounts.tsv'))
+            TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.tsv'))
+            TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.mergedFeatures.tsv'))
+            TARGETS['conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.tsv'))
             # --------- Figures
-            TARGETS['figures'].append(str(RESULTS_DIR / 'figures' / 'conversions' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Bio-rep_{bio_rep}_conversionRates.pdf'))
+            TARGETS['figures'].append(str(RESULTS_DIR / 'figures' / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.pdf'))
             
 # --------- All samples 
 # TARGETS['count_mtx'].append(str(RESULTS_DIR / 'read_counts' / 'featureCounts_allSamples_genecounts.tsv'))

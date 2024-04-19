@@ -28,9 +28,9 @@ rule merge_fq_lanes:
     input:
         unpack(_input_merge_fq)
     output:
-        outdir = directory('resources/fastq_seq/merged/{sample_type}_{treatment}_Bio-rep_{bio_rep}'),
-        merged_fq1 = 'resources/fastq_seq/merged/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_R1.fq.gz',
-        merged_fq2 = 'resources/fastq_seq/merged/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_R2.fq.gz'
+        outdir = directory('resources/fastq_seq/merged/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}'),
+        merged_fq1 = 'resources/fastq_seq/merged/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R1.fq.gz',
+        merged_fq2 = 'resources/fastq_seq/merged/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R2.fq.gz'
     threads: 6
     shell:
         """
