@@ -1,0 +1,58 @@
+# --------------------------- Default file paths ---------------------------- #
+SAMPLE_MANIFEST: 'config/sample_manifest.tsv'
+
+RESULTS_DIR: 'results'
+FIGURE_DIR: 'results/figures'
+QC_DIR: 'results/quality_control'
+
+EXTERNAL_DATA_DIR: 'resources/external'
+FASTQ_DIR: 'resources/fastq_seq'
+
+LOG_DIR: 'logs'
+TEMP_DIR: 'tmp'
+REPORT_DIR: 'reports'
+
+# --------------------------- Handles ---------------------------- #
+
+SUBSET_COLUMN: ''
+SUBSET_VALUE: ''
+
+# --------------------------- Params for raw processing ---------------------------- #
+
+TRIM_GALORE:
+    QUALITY: 20
+    LENGTH: 20
+    CLIP_5: 1
+    CLIP_3: 1
+    EXTRA: ''
+
+HISAT3N:
+    HISAT3N_BIN_PATH: '/lustre/groups/ife/schneider/paulina.rosales/bin/hisat-3n' # location of the hisat-3n git clone folder
+# -- Filter --
+    BASE_CHANGE: 'T,C' # two different nucleotides for the conversion analysis separated by a comma (eg. N,N)
+# -- Build --
+    REPEAT_INDEX: 'Yes' # (options: Yes, No)
+    RESOURCES_MODE: 'Low' # (options: Default, Low)
+# -- Align --
+    # KM: 5
+    ALIGN_EXTRA: ''
+# -- Table --
+    TABLE_EXTRA: '--unique-only'
+
+FEATURE_COUNTS:
+    # COUNT_MODE: '--primary' #  --primary, −−fraction or -M
+    FEATURE_TYPE: 'transcript'
+    ATTRIBUTE_TYPE: 'transcript_id'
+    EXTRA: '--primary'
+    
+# --------------------------- Params for downstream analysis ---------------------------- #
+
+BAKR:
+    MIN_BASE_DIST: 5 # Base distance from read-end filter (default: 5)
+    MIN_BASE_Q: 40 # Base minimal quality filter (default: 40)
+    STRANDEDNESS: 'F' # Is first read forward or reverse orientation? (options: F, R)
+
+    # GENE_FLAG: 'FALSE' # Whether reads were assigned to genes
+    # EXON_FLAG: 'FALSE' # Whether reads were assigned to exons
+    # EXONBIN_FLAG: 'FALSE' # Whether reads were assigned to exonbins
+    # TRANSCRIPT_FLAG: 'FALSE' # Whether reads were assigned to transcripts

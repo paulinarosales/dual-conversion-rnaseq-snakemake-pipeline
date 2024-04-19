@@ -1,0 +1,6 @@
+Identifier	Sample_type	Treatment	Condition	Labeling_method	Labeling_time	Bio_rep	Clone	Target_genome	Sequencer	Seq_mode	Seq_length	Fastq_handle	Fastq_lanes	Control
+24L000114	osTIR1	0h	osTIR1_0h	SLAM	1h	1	x	M32	NovaSeqX	totalRNA	100	39	1	1
+24L000115	osTIR1	8h	osTIR1_8h	SLAM	1h	1	x	M32	NovaSeqX	totalRNA	100	40	1	1
+24L000117	osTIR1	8h	osTIR1_8h	SLAM	1h	2	x	M32	NovaSeqX	totalRNA	100	42	1	1
+24L000118	H1-trip-dep	0h	H1-trip-dep_0h	SLAM	1h	1	3-12D	M32	NovaSeqX	totalRNA	100	43	1	0
+24L000120	H1-trip-dep	0h	H1-trip-dep_0h	SLAM	1h	2	5-1D	M32	NovaSeqX	totalRNA	100	45	1	0

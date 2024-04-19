@@ -1,0 +1,8 @@
+config/*.pdf
+results/
+resources/
+reports/
+logs/
+joblogs/
+profiles/
+.snakemake
