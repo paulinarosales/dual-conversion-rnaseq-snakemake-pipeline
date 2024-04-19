@@ -3,11 +3,13 @@ def _params_trim_galore(wildcards):
     # add --2colour option depending on sequencing technology
     sample_type = wildcards['sample_type']
     treatment = wildcards['treatment']
+    chase_time_h = wildcards['chase_time_h']
     bio_rep = wildcards['bio_rep']
 
     _sequencer = SAMPLES.loc[( 
                           sample_type, 
                           treatment,
+                          chase_time_h,
                           bio_rep), 
                         'Sequencer']
 

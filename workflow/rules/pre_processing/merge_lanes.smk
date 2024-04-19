@@ -3,11 +3,11 @@ def _input_merge_fq(wildcards):
     treatment = wildcards.treatment
     bio_rep = wildcards.bio_rep
     
-    identifier = SAMPLES.loc[(sample_type, treatment, bio_rep), 'Identifier']
-    handle = SAMPLES.loc[(sample_type, treatment, bio_rep), 'Fastq_handle']
+    identifier = SAMPLES.loc[(sample_type, treatment, chase_time_h, bio_rep), 'Identifier']
+    handle = SAMPLES.loc[(sample_type, treatment, chase_time_h, bio_rep), 'Fastq_handle']
 
 
-    _n_lanes = SAMPLES.loc[(sample_type, treatment, bio_rep), 'Fastq_lanes']
+    _n_lanes = SAMPLES.loc[(sample_type, treatment, chase_time_h, bio_rep), 'Fastq_lanes']
 
     if _n_lanes == 1:
         l_r1 = f'resources/fastq_seq/raw/{identifier}_S{handle}_L001_R1_001.fastq.gz'

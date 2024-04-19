@@ -26,6 +26,7 @@ QC_DIR = Path(config['QC_DIR'])
 
 EXTERNAL_DATA_DIR = Path(config['EXTERNAL_DATA_DIR'])
 FASTQ_DIR = Path(config['FASTQ_DIR'])
+INDEX_DIR = Path(config['INDEX_DIR'])
 
 LOG_DIR = Path(config['LOG_DIR'])
 TEMP_DIR = Path(config['TEMP_DIR'])
@@ -42,6 +43,7 @@ SAMPLE_MANIFEST['Bio_rep'] = SAMPLE_MANIFEST.Bio_rep.astype(str)
 # Specify the sample info combinations to use as label per sample
 SAMPLES = SAMPLE_MANIFEST.set_index(['Sample_type',
                                      'Treatment',
+                                     'Chase_time_h',
                                      'Bio_rep'])
 
 
@@ -103,12 +105,12 @@ IDX_SUFFIX = HISAT3N_INDEX_SUFFIX[CONVERSION] # expand('3n.{conversion}.{number}
 # print(IDX_SUFFIX)
 
 
-for sample_type, treatment, bio_rep in SAMPLES.index:
-    identifier = SAMPLES.loc[(sample_type, treatment, bio_rep), 'Identifier']
-    handle = SAMPLES.loc[(sample_type, treatment, bio_rep), 'Fastq_handle']
+for sample_type, treatment, chase_time_h, bio_rep in SAMPLES.index:
+    identifier = SAMPLES.loc[(sample_type, treatment, chase_time_h, bio_rep), 'Identifier']
+    handle = SAMPLES.loc[(sample_type, treatment, chase_time_h, bio_rep), 'Fastq_handle']
     # Select samples with specified value on a given column in the sample manifest (USE CONFIG FILE TO SELECT)
     if SUBSET_COLUMN:
-        if SAMPLES.loc[(sample_type, treatment, bio_rep), SUBSET_COLUMN] == config['SUBSET_VALUE']:
+        if SAMPLES.loc[(sample_type, treatment, chase_time_h, bio_rep), SUBSET_COLUMN] == config['SUBSET_VALUE']:
             # --------- Raw procesing
             TARGETS['raw_seq'].append(str(FASTQ_DIR / 'raw'/ f'{identifier}_S{handle}_L001_R2_001.fastq.gz'))
             TARGETS['merged_fq'].append(str(FASTQ_DIR / 'merged'/ f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R2.fq.gz'))
@@ -150,7 +152,7 @@ include: 'rules/quality_control/fastqc.smk'
 include: 'rules/pre_processing/trim_galore.smk'
 include: 'rules/alignment/hisat3n.smk'
 include: 'rules/alignment/samtools.smk'
-# include: 'rules/alignment/bcftools.smk'
+include: 'rules/alignment/bcftools.smk'
 
 # --------- Downstream analysis
 include: 'rules/quantification/hisat3n_table.smk'
