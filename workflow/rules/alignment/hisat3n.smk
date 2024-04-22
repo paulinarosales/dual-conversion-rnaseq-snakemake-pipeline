@@ -52,40 +52,30 @@ def _params_for_hisat3n_align(wildcards):
 
 # --------- Rules ----------
 # evaluation after run does not work, outdir doesn't match
-checkpoint hisat3n_build:
-    input:
-       'resources/external/gencode_{release}/{genome}.genome.fa'
+rule get_genome_index:
     output:
         # directory('resources/external/index/hisat3n/gencode_{release}/{genome}.genome')
-        directory('resources/external/index/hisat3n/gencode_{release}_{genome}/genome')
+        directory('resources/external/index/hisat3n/gencode_{release}')
     log:
-        'logs/hisat3n/build/gencode_{release}_{genome}_index.log'
+        'logs/hisat3n/build/gencode_{release}_copy_index.log'
     params:
-        command = f'{HISAT3N_BIN_PATH}/hisat-3n-build', # run HISAT-3N script from git clone folder
-        # index_basename = 'resources/external/index/hisat3n/gencode_{release}/{genome}.genome',
-        base_change = config['HISAT3N']['BASE_CHANGE'],
-        extra = _params_for_hisat3n
-    conda:
-        '/home/ife/paulina.rosales/miniconda3/envs/hisat-3n'
-    threads: 32
-    resources:
-        mem = '169G',
-        time = '3-00:00:00'
+        source_dir = config['HISAT3N']['HISAT3N_GENOME_INDEX_PATH'],
+        copy_to_dir = INDEX_DIR
     shell:
         """
-            {params.command} --base-change {params.base_change}\
-            {params.extra} -p {threads}\
-            {input} {output} > {log} 2>&1 
+            rsync -Pav {params.source_dir} {params.copy_to_dir} 2> {log}
         """
 
 
 rule hisat3n_align:
     input:
         index = _input_for_hisat3n_align,
-        fq1 = 'results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_val_1.fq.gz',
-        fq2 = 'results/fastq/trimmed/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_val_2.fq.gz'
+        fq1 = 'results/fastq/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R1.prefilter.fq',
+        fq2 = 'results/fastq/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R2.prefilter.fq'
     output:
-        'results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sam'
+        alignSAM = 'results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sam',
+        unalignSAM_1 = 'results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_unalign.1.sam',
+        unalignSAM_2 = 'results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_unalign.2.sam'
     log:
         'logs/hisat3n/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_align.log'
     conda:
@@ -99,12 +89,14 @@ rule hisat3n_align:
         index_basename = _index_basename_for_hisat3n,
         repeat = _params_for_hisat3n_align,
         base_change = config['HISAT3N']['BASE_CHANGE'],
+        unalign_basename = 'results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_unalign.%.sam',
         extra = config['HISAT3N']['ALIGN_EXTRA']
     shell:
         """
             {params.command} -p {threads} -x {params.index_basename}\
             -q -1 {input.fq1} -2 {input.fq2}\
-            -S {output} --base-change {params.base_change}\
+            -S {output.alignSAM} --base-change {params.base_change}\
             {params.repeat} {params.extra}\
+            --un-conc {params.unalign_basename}\
             --new-summary --summary-file {log} 
         """

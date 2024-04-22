@@ -81,9 +81,9 @@ HISAT3N_INDEX_SUFFIX = {
 TARGETS = {# -- Raw procesing
             'raw_seq': [], 
             'merged_fq': [],
-            'fastqc_raw': [],
+            'fastqc': [],
             'trimmed': [],
-            'hisat3n_index': [],
+            'hisat3n_prefilter': [],
             'hisat3n': [],
             'samtools_sort': [],
             # -- Downstream analysis
@@ -121,8 +121,11 @@ for sample_type, treatment, chase_time_h, bio_rep in SAMPLES.index:
             # --------- Raw procesing
             TARGETS['raw_seq'].append(str(FASTQ_DIR / 'raw'/ f'{identifier}_S{handle}_L001_R2_001.fastq.gz'))
             TARGETS['merged_fq'].append(str(FASTQ_DIR / 'merged'/ f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R2.fq.gz'))
-            TARGETS['fastqc_raw'].append(expand('results/quality_control/raw_fastq/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R{read}_fastqc.html', sample_type=sample_type, treatment=treatment, chase_time_h=chase_time_h, bio_rep=bio_rep, read=[1,2]))
+            TARGETS['fastqc'].append(expand('results/quality_control/raw_fastq/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R{read}_fastqc.html', sample_type=sample_type, treatment=treatment, chase_time_h=chase_time_h, bio_rep=bio_rep, read=[1,2]))
             TARGETS['trimmed'].append(str(RESULTS_DIR / 'fastq' / 'trimmed' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R1.fq.gz_trimming_report.txt'))
+            TARGETS['hisat3n_prefilter'].append(str(RESULTS_DIR / 'sam_files' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.prefilter.sam'))
+            TARGETS['hisat3n_prefilter'].append(expand('results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_unalign.prefilter.{read}.sam', sample_type=sample_type, treatment=treatment, chase_time_h=chase_time_h, bio_rep=bio_rep, read=[1,2]))
+            TARGETS['fastqc'].append(expand('results/quality_control/prefilter_fastq/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_R{read}.prefilter_fastqc.html', sample_type=sample_type, treatment=treatment, chase_time_h=chase_time_h, bio_rep=bio_rep, read=[1,2]))
             TARGETS['hisat3n'].append(str(RESULTS_DIR / 'sam_files' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sam'))
             TARGETS['samtools_sort'].append(str(RESULTS_DIR / 'sam_files' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam'))
             TARGETS['hisat3n_tab'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_tab.tsv'))
@@ -150,6 +153,7 @@ include: 'rules/external_data/annotation_tables.smk'
 include: 'rules/pre_processing/merge_lanes.smk'
 include: 'rules/quality_control/fastqc.smk'
 include: 'rules/pre_processing/trim_galore.smk'
+include: 'rules/alignment/hisat3n_prefilter.smk'
 include: 'rules/alignment/hisat3n.smk'
 include: 'rules/alignment/samtools.smk'
 include: 'rules/alignment/bcftools.smk'
@@ -169,8 +173,9 @@ include: 'rules/figures/conversion_rates.smk'
 
 rule multiqc_report:
     input:
-        TARGETS['fastqc_raw'],
+        TARGETS['fastqc'],
         TARGETS['trimmed'],
+        TARGETS['hisat3n_prefilter'],
         TARGETS['hisat3n'],
         TARGETS['samtools_stats'],
         TARGETS['featureCounts']
