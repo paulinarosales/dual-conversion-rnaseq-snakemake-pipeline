@@ -51,6 +51,12 @@ for(ref_base in ref_code){
 }
 cat("\n")
 
+cat("Removing entries with no conversions...", sep="\n")
+print(nrow(all_rates_tab))
+all_rates_tab <- all_rates_tab[rowSums(all_rates_tab[,(ncol(all_rates_tab)-15):ncol(all_rates_tab)]) > 0,] # select only cols with the conversion rates
+print(nrow(all_rates_tab))
+cat("\n")
+
 cat(paste0("Saving outputs:\n\t- ", outputTSV), sep="\n")
 write.table(all_rates_tab, file = outputTSV, row.names= FALSE, quote = FALSE, sep = "\t")
 cat("\n")
