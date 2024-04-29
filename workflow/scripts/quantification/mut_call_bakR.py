@@ -244,19 +244,22 @@ for r in samfile:
 
             # _muts.rds data
             if args.mutsRDS:
-                if (b[0].upper() in args.base):
+                # if (b[0].upper() in args.base):
+                if b[0].islower():
                     if (r.reference_name + ':' + str(pos)) not in freq:
                         freq[r.reference_name + ':' + str(pos)] = [1, 0]                   # Initialize counter for position
                     else:
                         freq[r.reference_name + ':' + str(pos)][0] += 1                    # Increment read coverage counter for given genomic position
 
-                if b[0].islower() and ((b[0].upper() + b[1]) in args.mutType):
+                #if b[0].islower() and ((b[0].upper() + b[1]) in args.mutType):
                     freq[r.reference_name + ':' + str(pos)][1] += 1                        # Increment mutation counter for given genomic position
 
             # cU.rds trial data
             if args.mutPos:
-                if (b[0].upper() in args.base):
-                    whichMut = [mut for mut in args.mutType if mut[0] == b[0].upper()]     # Find out which mutation types use this reference base e.g. T -> TC, TG, TA, TN
+                # if (b[0].upper() in args.base):
+                if b[0].islower():
+                    # whichMut = [mut for mut in args.mutType if mut[0] == b[0].upper()]     # Find out which mutation types use this reference base e.g. T -> TC, TG, TA, TN
+                    whichMut = [mut for mut in muts if mut[0] == b[0].upper()]     # Find out which mutation types use this reference base e.g. T -> TC, TG, TA, TN
                     for mt in whichMut:
                         key = r.reference_name + ':' + str(pos) + ':' + mt
                         if key not in cU:
@@ -270,14 +273,14 @@ for r in samfile:
 
                 # mutPos bedGraph data + cU.rds n data
                 if args.mutPos:
-                    if (b[0].upper() + b[1]) in args.mutType:
-                        key = r.reference_name + ':' + str(pos) + ':' + b[0].upper() + b[1]
-                        cU[key][1] += 1
+                    # if (b[0].upper() + b[1]) in args.mutType:
+                    key = r.reference_name + ':' + str(pos) + ':' + b[0].upper() + b[1]
+                    cU[key][1] += 1
 
-                        key = r.reference_name +  ':' + str(pos) + ':' + r_info[6] + ':' + b[0].upper() + b[1]
+                    key = r.reference_name +  ':' + str(pos) + ':' + r_info[6] + ':' + b[0].upper() + b[1]
 
-                        gmutloc.append(str(pos))            # Record position of muatation
-                        tp.append(b[0].upper() + b[1])      # Record type of mutation
+                    gmutloc.append(str(pos))            # Record position of mutation
+                    tp.append(b[0].upper() + b[1])      # Record type of mutation
 
 
 
