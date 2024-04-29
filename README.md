@@ -53,16 +53,16 @@ To use this pipeline you would first need to create a Snakemake environment and 
 
     ```
         # Read 1
-        {Sample_type}_{Treatment}_Bio-rep_{Bio_rep}_R1.fastq.gz
+        {Sample_type}_{Treatment}_Chase-time_{chase_time_h}_Bio-rep_{Bio_rep}_R1.fastq.gz
 
         # Read 2
-        {Sample_type}_{Treatment}_Bio-rep_{Bio_rep}_R2.fastq.gz
+        {Sample_type}_{Treatment}_Chase-time_{chase_time_h}_Bio-rep_{Bio_rep}_R2.fastq.gz
     ```
     Again, with the corresponding values on the `config/sample_manifest.tsv`. If yopu wish to change the name of the raw files yo can do so changing the values of ` TARGETS['raw_seq']` on the `Snakefile` and `merge_lanes.smk` rule.
 
 <blockquote class="callout warning">
   <h4>⚠️ Warning</h4>
-  <p>Changing the structure `{Sample_type}_{Treatment}_Bio-rep_{Bio_rep}` of filenames is not recommended and we don't ensure the proper functioning of the pipeline once it is done.</p>
+  <p>Changing the structure `{Sample_type}_{Treatment}_Chase-time_{chase_time_h}_Bio-rep_{Bio_rep}` of filenames is not recommended and we don't ensure the proper functioning of the pipeline once it is done.</p>
 </blockquote>
 
 4. Check and change processing parameters on your `config/config.yaml` according to your analysis set-up.
@@ -81,8 +81,8 @@ To use this pipeline you would first need to create a Snakemake environment and 
         ├── resources
         |   └── fastq_seq
         |       └── raw
-        |            ├── {Sample_type}_{Treatment}_Bio-rep_{Bio_rep}_R1.fastq.gz
-        |            └── {Sample_type}_{Treatment}_Bio-rep_{Bio_rep}_R2.fastq.gz
+        |            ├── {Sample_type}_{Treatment}_Chase-time_{chase_time_h}_Bio-rep_{Bio_rep}_R1.fastq.gz
+        |            └── {Sample_type}_{Treatment}_Chase-time_{chase_time_h}_Bio-rep_{Bio_rep}_R2.fastq.gz
         └── workflow
     ```
 

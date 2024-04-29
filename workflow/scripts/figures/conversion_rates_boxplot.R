@@ -38,7 +38,8 @@ quantiles <- lapply(rates_t, function(x) {
 
 print(quantiles)
 
-ymax <- ceiling(max(unlist(quantiles)))
+# ymax <- ceiling(max(unlist(quantiles)))
+ymax <- 3
 
 
 rates_t <- rbind(# A
@@ -63,6 +64,7 @@ head(rates_t)
 cat(paste0("Identifying target mutation: ", sub("_", ">", target_mut)), sep="\n")
 rates_t$highlight <- "no"
 rates_t$highlight[rates_t$class == target_mut] <- "yes"
+rates_t$highlight[rates_t$class == "C_T"] <- "yes"
 rates_t$class <- sub("_", ">", rates_t$class)
 # Divide in original base blocks
 rates_t$group <- "A"

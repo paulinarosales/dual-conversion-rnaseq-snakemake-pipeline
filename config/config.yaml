@@ -7,6 +7,7 @@ QC_DIR: 'results/quality_control'
 
 EXTERNAL_DATA_DIR: 'resources/external'
 FASTQ_DIR: 'resources/fastq_seq'
+INDEX_DIR: 'resources/external/index'
 
 LOG_DIR: 'logs'
 TEMP_DIR: 'tmp'
@@ -19,6 +20,8 @@ SUBSET_VALUE: ''
 
 # --------------------------- Params for raw processing ---------------------------- #
 
+BASE_CHANGES: ['TC', 'CT']
+
 TRIM_GALORE:
     QUALITY: 20
     LENGTH: 20
@@ -26,8 +29,15 @@ TRIM_GALORE:
     CLIP_3: 1
     EXTRA: ''
 
+BCFTOOLS:
+    PLOIDY: 2
+    MIN_QUAL: 20
+    MIN_DEPTH: 10
+    
 HISAT3N:
     HISAT3N_BIN_PATH: '/lustre/groups/ife/schneider/paulina.rosales/bin/hisat-3n' # location of the hisat-3n git clone folder
+    HISAT3N_FILTER_INDEX_PATH: '/lustre/groups/ife/schneider/paulina.rosales/resources/hisat3n_indexes/mouse_rDNA_BK000964-3' # location of the hisat-3n git clone folder
+    HISAT3N_GENOME_INDEX_PATH: '/lustre/groups/ife/schneider/paulina.rosales/resources/hisat3n_indexes/gencode_M25' # location of the hisat-3n git clone folder
 # -- Filter --
     BASE_CHANGE: 'T,C' # two different nucleotides for the conversion analysis separated by a comma (eg. N,N)
 # -- Build --
@@ -35,7 +45,7 @@ HISAT3N:
     RESOURCES_MODE: 'Low' # (options: Default, Low)
 # -- Align --
     # KM: 5
-    ALIGN_EXTRA: ''
+    ALIGN_EXTRA: '--directional-mapping'
 # -- Table --
     TABLE_EXTRA: '--unique-only'
 
@@ -56,3 +66,10 @@ BAKR:
     # EXON_FLAG: 'FALSE' # Whether reads were assigned to exons
     # EXONBIN_FLAG: 'FALSE' # Whether reads were assigned to exonbins
     # TRANSCRIPT_FLAG: 'FALSE' # Whether reads were assigned to transcripts
+
+BULLSEYE:
+    MIN_COVERAGE:  10
+    MIN_EDIT_RATE:  5  # minimal editing rates
+    MAX_EDIT_RATE: 90  # maximal editing rates
+    MIN_EDIT_FOLD_RATIO:  1.5  # minimal editing ratio over control sample
+    MIN_EDIT_SITES:  3  # minimal number of mutations for detection of site
