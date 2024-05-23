@@ -42,6 +42,7 @@ rule bullseye_gtf2genepred:
              perl workflow/scripts/bullseye/gtf2genepred.pl --gtf {input} --out {output}
         """        
 
+
 rule bullseye_findSite:
     input:
         editMTX = 'results/site_calling/{sample_type}_APOBEC1-YTH-wt_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_APOBEC1-YTH-wt_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
@@ -75,6 +76,7 @@ rule bullseye_findSite:
  	            --cpu {threads} \
  	            --outfile {output} \
  	            --fallback {input.refGenome} \
- 	            --verbose 2>&1 {log}
+ 	            --verbose &> {log}
         """
         
+
