@@ -11,3 +11,17 @@ rule conv_rates_plot:
         '../../envs/downstream/r-basic.yaml'
     script:
         '../../scripts/figures/conversion_rates_boxplot.R'
+
+rule global_conv_rates_plot:
+    input:
+        sample_manifestTSV = config['SAMPLE_MANIFEST'],
+        convFiles = TARGETS['global_conv_rates']
+    output:
+        all_globalRatesTSV = 'results/conversion_tables/all_samples/global_conversionRates.tsv',
+        barplotPDF = 'results/figures/conversions/all_samples/global_conversionRates.pdf'
+    log:
+        'logs/figures/all_samples/global_conversionRates.log'
+    conda:
+        '../../envs/downstream/r-basic.yaml'
+    script:
+        '../../scripts/figures/global_conversion_rates_barplot.R'

@@ -95,6 +95,7 @@ TARGETS = {# -- Raw procesing
             'bakR': [],
             'bullseye': [],
             'featureCounts': [],
+            'global_conv_rates': [],
             'conv_rates': [],
             'figures': [],
             # -- All samples 
@@ -142,7 +143,8 @@ for sample_type, treatment, chase_time_h, bio_rep in SAMPLES.index:
             TARGETS['featureCounts'].append(str(RESULTS_DIR / 'counts' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_genecounts.tsv'))
             TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.tsv'))
             TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.mergedFeatures.tsv'))
-            TARGETS['conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.tsv'))
+            TARGETS['global_conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_globalConversionRates.tsv'))
+            TARGETS['conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_geneConversionRates.tsv'))
             TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz'))
             # --------- Figures
             TARGETS['figures'].append(str(RESULTS_DIR / 'figures' / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.pdf'))
@@ -211,7 +213,9 @@ rule all:
         # TARGETS['hisat3n_tab'],
         # TARGETS['bakR'],
         # TARGETS['featureCounts'],
-        # TARGETS['conv_rates'],
+        TARGETS['global_conv_rates'],
+        'results/figures/conversions/all_samples/global_conversionRates.pdf',
+        TARGETS['conv_rates'],
         TARGETS['figures'],
         TARGETS['bullseye'],
         str(REPORT_DIR / 'multiqc')
