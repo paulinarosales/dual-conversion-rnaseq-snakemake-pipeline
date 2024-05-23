@@ -47,7 +47,7 @@ rule get_annotation:
         http = 1
     shell:
         """
-            wget --quiet http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_{params.organism}/release_{wildcards.release}/gencode.v{wildcards.release}.annotation.gtf.gz -O  {output} 2> {log}
+            wget --quiet http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_{params.organism}/release_{wildcards.release}/gencode.v{wildcards.release}.primary_assembly.annotation.gtf.gz -O  {output} 2> {log}
         """
 
 
