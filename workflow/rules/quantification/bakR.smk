@@ -41,23 +41,3 @@ rule bakR_merge:
         '../../envs/downstream/r-basic.yaml'
     script:
         '../../scripts/quantification/merge_features_and_muts.R'
-     
-
-# rule bakR_cB:
-#     input:
-#         'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.features.tsv'
-#     output:
-#         'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_cB.tsv'
-#     log:
-#         'logs/bakR/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_make_cB.log'
-#     params:
-#         conversions_dir = 'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}',
-#         mutType = config['HISAT3N']['BASE_CHANGE'], # Type of mutation to record (default: TC)
-#     threads: 16
-#     resources:
-#         mem = '64G'
-#     conda:
-#         '../../envs/downstream/r-basic.yaml'
-#     script:
-#         '../../scripts/quantification/make_bakR_cB.sh'
-     
