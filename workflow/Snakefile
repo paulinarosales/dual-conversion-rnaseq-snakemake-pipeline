@@ -151,7 +151,7 @@ for sample_type, treatment, chase_time_h, bio_rep in SAMPLES.index:
             TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.bed'))
             TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.RAC.bed'))
             # --------- Figures
-            # TARGETS['figures'].append(str(FIGURES_DIR / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.pdf'))
+            TARGETS['figures'].append(str(FIGURES_DIR / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.pdf'))
             
     # if control == 0:
     #         TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.bed'))

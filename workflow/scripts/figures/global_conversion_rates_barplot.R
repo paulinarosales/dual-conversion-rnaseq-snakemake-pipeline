@@ -58,14 +58,14 @@ rates_t <- rates_t %>% select(c("Sample", 1:12))
 cat("\n")
 
 cat("Plotting...", sep="\n")
-rates_p <- ggplot(pivot_rates_t, aes(x=mut, y=rate, fill=Treatment)) + 
+rates_p <- ggplot(pivot_rates_t, aes(x=mut, y=rate, fill=Sample_type)) + 
                 geom_bar(position="dodge", stat="identity") +
-                geom_text(aes(label = rate, group=Treatment), 
+                geom_text(aes(label = rate, group=Sample_type), 
                 angle = 90, position = position_dodge(width = 1), 
                 hjust = -0.2, vjust = 0.5, size = 3) +
-                scale_fill_manual(values = pawlette[1:2]) +
+                scale_fill_manual(values = pawlette[1:length(unique(pivot_rates_t$Sample_type))]) +
                 labs(x = "Mutation", y = "Global conversion rate [%]") +
-                facet_wrap(~Sample_type, ncol = 1) +
+                facet_wrap(~Treatment, ncol = 1) +
                 ylim(c(0,1)) +
                 theme_bw()
 

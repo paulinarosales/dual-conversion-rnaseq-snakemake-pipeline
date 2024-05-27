@@ -71,7 +71,7 @@ for(mut in names(global_rates)){
 cat("\n")
 
 cat("Global conversion rates:", sep="\n")
-global_rates <- data.frame(as.list(round(global_rates, 3)))
+global_rates <- data.frame(as.list(round(global_rates, 2)))
 print(global_rates)
 cat("\n\n")
 
