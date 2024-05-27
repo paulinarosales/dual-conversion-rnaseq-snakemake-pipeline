@@ -2,7 +2,7 @@
 SAMPLE_MANIFEST: 'config/sample_manifest.tsv'
 
 RESULTS_DIR: 'results'
-FIGURE_DIR: 'results/figures'
+FIGURES_DIR: 'results/figures'
 QC_DIR: 'results/quality_control'
 
 EXTERNAL_DATA_DIR: 'resources/external'
@@ -55,6 +55,9 @@ FEATURE_COUNTS:
     ATTRIBUTE_TYPE: 'transcript_id'
     EXTRA: '--primary'
     
+NASCENT_GENECOUNTS:
+    MIN_TOTAL_READS: 10
+    MIN_CONVERSIONS: 2
 # --------------------------- Params for downstream analysis ---------------------------- #
 
 BAKR:
@@ -73,3 +76,7 @@ BULLSEYE:
     MAX_EDIT_RATE: 90  # maximal editing rates
     MIN_EDIT_FOLD_RATIO:  1.5  # minimal editing ratio over control sample
     MIN_EDIT_SITES:  3  # minimal number of mutations for detection of site
+
+RAC_FILTER: # For Patrick's window_rac_filter.py script
+        WINDOW_SIZE: 0 # default= 0, help="How big the window should be. Use 0 for regular strict RAC filter.")
+        ADAPT_COORDS: 'True' # default=True, help="Whether we should switch coordinates to A in RAC motif")
