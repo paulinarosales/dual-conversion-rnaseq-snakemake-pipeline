@@ -57,7 +57,7 @@ rule hisat3n_prefilter_align:
         '../../envs/alignment/hisat3n.yaml'
     threads: 32
     resources:
-        mem = '140G',
+        mem = '300G',
         time = '1-00:00:00'
     params:
         command = f'{HISAT3N_BIN_PATH}/hisat-3n', # run HISAT-3N script from git clone folder
