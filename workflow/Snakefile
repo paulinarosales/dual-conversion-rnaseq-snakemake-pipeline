@@ -24,7 +24,7 @@ configfile: 'config/config.yaml'
 # --------------------------- Read config file ---------------------------- #
 
 RESULTS_DIR = Path(config['RESULTS_DIR'])
-FIGURE_DIR = Path(config['FIGURE_DIR'])
+FIGURES_DIR = Path(config['FIGURES_DIR'])
 QC_DIR = Path(config['QC_DIR'])
 
 EXTERNAL_DATA_DIR = Path(config['EXTERNAL_DATA_DIR'])
@@ -95,6 +95,7 @@ TARGETS = {# -- Raw procesing
             'bakR': [],
             'bullseye': [],
             'featureCounts': [],
+            'nascent_cts': [],
             'global_conv_rates': [],
             'conv_rates': [],
             'figures': [],
@@ -141,19 +142,24 @@ for sample_type, treatment, chase_time_h, bio_rep in SAMPLES.index:
             TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.flagstat'))
             TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.coverage'))
             TARGETS['featureCounts'].append(str(RESULTS_DIR / 'counts' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_genecounts.tsv'))
+            # TARGETS['nascent_cts'].append(str(RESULTS_DIR / 'counts' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_genecounts.nascent.tsv'))
             TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.tsv'))
             TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.mergedFeatures.tsv'))
             TARGETS['global_conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_globalConversionRates.tsv'))
             TARGETS['conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_geneConversionRates.tsv'))
-            TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz'))
+            TARGETS['bullseye'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz'))
+            TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.bed'))
+            TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.RAC.bed'))
             # --------- Figures
-            TARGETS['figures'].append(str(RESULTS_DIR / 'figures' / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.pdf'))
+            # TARGETS['figures'].append(str(FIGURES_DIR / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.pdf'))
             
-    if control == 0:
-            TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.bed'))
+    # if control == 0:
+    #         TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.bed'))
+    #         TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.RAC.bed'))
 
 
 # --------- All samples 
+TARGETS['figures'].append(str( FIGURES_DIR / 'conversions' / 'all_samples' / 'global_conversionRates.pdf'))
 # TARGETS['count_mtx'].append(str(RESULTS_DIR / 'read_counts' / 'featureCounts_allSamples_genecounts.tsv'))
 # TARGETS['hisat3n_index'] = expand('resources/external/index/hisat3n/gencode_{release}/{genome}.genome.3n.{conversion}.{number}.ht2', release=GENCODE_RELEASE, genome=GENOME, conversion=IDX_SUFFIX, number=range(1,9))
 # print(TARGETS['hisat3n_index'])
@@ -173,6 +179,7 @@ include: 'rules/alignment/bcftools.smk'
 # --------- Downstream analysis
 include: 'rules/quantification/hisat3n_table.smk'
 include: 'rules/quantification/featureCounts.smk'
+include: 'rules/quantification/count_tabs.smk'
 include: 'rules/quality_control/samtools_stats.smk'
 include: 'rules/quantification/bakR.smk'
 include: 'rules/quantification/conversion_rates.smk'
@@ -210,13 +217,8 @@ rule multiqc_report:
 
 rule all:
     input:
-        # TARGETS['hisat3n_tab'],
-        # TARGETS['bakR'],
-        # TARGETS['featureCounts'],
-        TARGETS['global_conv_rates'],
-        'results/figures/conversions/all_samples/global_conversionRates.pdf',
-        TARGETS['conv_rates'],
         TARGETS['figures'],
         TARGETS['bullseye'],
+        # TARGETS['nascent_cts'],
         str(REPORT_DIR / 'multiqc')
     default_target: True
