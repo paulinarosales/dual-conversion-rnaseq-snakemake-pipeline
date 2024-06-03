@@ -65,13 +65,14 @@ rule hisat3n_prefilter_align:
         repeat = _params_for_hisat3n_align,
         base_change = config['HISAT3N']['BASE_CHANGE'],
         unalign_basename = 'results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_unalign.prefilter.%.sam',
+        strandness = config['HISAT3N']['STRANDNESS'],
         extra = config['HISAT3N']['ALIGN_EXTRA']
     shell:
         """
             {params.command} -p {threads} -x {params.index_basename}\
             -q -1 {input.fq1} -2 {input.fq2}\
             -S {output.alignSAM} --base-change {params.base_change}\
-            {params.repeat} {params.extra}\
+            {params.repeat} --rna-strandness {params.strandness} {params.extra}\
             --un-conc {params.unalign_basename}\
             --new-summary --summary-file {log} 
         """

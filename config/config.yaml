@@ -45,6 +45,7 @@ HISAT3N:
     RESOURCES_MODE: 'Low' # (options: Default, Low)
 # -- Align --
     # KM: 5
+    STRANDNESS: 'RF' # --rna-strandnessK
     ALIGN_EXTRA: '--directional-mapping'
 # -- Table --
     TABLE_EXTRA: '--unique-only'
@@ -58,12 +59,14 @@ FEATURE_COUNTS:
 NASCENT_GENECOUNTS:
     MIN_TOTAL_READS: 10
     MIN_CONVERSIONS: 2
+    MERGE_COLUMNS: ['total_counts', 'nascent_counts', 'nascent_fraction']
 # --------------------------- Params for downstream analysis ---------------------------- #
 
 BAKR:
     MIN_BASE_DIST: 5 # Base distance from read-end filter (default: 5)
     MIN_BASE_Q: 40 # Base minimal quality filter (default: 40)
-    STRANDEDNESS: 'F' # Is first read forward or reverse orientation? (options: F, R)
+    STRANDEDNESS: 'R' # Is first read forward or reverse orientation? (options: F, R) 
+                      # [F means read 1 represents original RNA sequence (vs. its reverse complement)]
 
     # GENE_FLAG: 'FALSE' # Whether reads were assigned to genes
     # EXON_FLAG: 'FALSE' # Whether reads were assigned to exons
