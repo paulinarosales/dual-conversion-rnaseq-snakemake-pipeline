@@ -46,15 +46,22 @@ rates_t <- data.frame("T_A" = numeric(nrow(sample_man)), "C_A" = numeric(nrow(sa
                       "Chase_time_h" = sample_man$Chase_time_h,
                       "Sample" = rownames(sample_man))
 
+
+
 for(i in 1:nrow(sample_man)){
         conv_rates <- read.table(sample_man$files[i], header = TRUE, sep = "\t")
         rates_t[i, colnames(conv_rates)] <- conv_rates
 }
 
+
 pivot_rates_t <- rates_t %>% pivot_longer(cols = 1:12, names_to = "mut", values_to = "rate")
+head(pivot_rates_t)
+pivot_rates_t$rate <- round(pivot_rates_t$rate, 2)
+head(pivot_rates_t)
 # pivot_rates_t$mut <- sub("_", "-to-", pivot_rates_t$mut) # chage mutation label from N_N --> N-to-N for clarity
 
-rates_t <- rates_t %>% select(c("Sample", 1:12))
+
+rates_t <- rates_t %>% select(c("Sample", 1:12)) # select only rate to save plot
 cat("\n")
 
 cat("Plotting...", sep="\n")
@@ -62,10 +69,10 @@ rates_p <- ggplot(pivot_rates_t, aes(x=mut, y=rate, fill=Sample_type)) +
                 geom_bar(position="dodge", stat="identity") +
                 geom_text(aes(label = rate, group=Sample_type), 
                 angle = 90, position = position_dodge(width = 1), 
-                hjust = -0.2, vjust = 0.5, size = 3) +
+                hjust = -0.2, vjust = 0.5, size = 2) +
                 scale_fill_manual(values = pawlette[1:length(unique(pivot_rates_t$Sample_type))]) +
                 labs(x = "Mutation", y = "Global conversion rate [%]") +
-                facet_wrap(~Treatment, ncol = 1) +
+                facet_grid(Chase_time_h~Treatment) +
                 ylim(c(0,1)) +
                 theme_bw()
 

@@ -38,8 +38,8 @@ quantiles <- lapply(rates_t, function(x) {
 
 print(quantiles)
 
-# ymax <- ceiling(max(unlist(quantiles)))
-ymax <- 3
+ymax <- ceiling(max(unlist(quantiles)))
+# ymax <- 3
 
 
 rates_t <- rbind(# A
