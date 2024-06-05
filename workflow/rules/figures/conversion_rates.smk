@@ -1,6 +1,6 @@
 rule conv_rates_plot:
     input:
-        'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_geneConversionRates.tsv'
+        'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.transcripts.tsv'
     output:
         'results/figures/conversions/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.pdf'
     params:
@@ -9,6 +9,9 @@ rule conv_rates_plot:
         'logs/figures/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.log'
     conda:
         '../../envs/downstream/r-basic.yaml'
+    threads: 24
+    resources:
+        mem = '24G'
     script:
         '../../scripts/figures/conversion_rates_boxplot.R'
 

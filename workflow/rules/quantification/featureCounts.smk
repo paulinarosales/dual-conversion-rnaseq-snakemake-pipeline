@@ -6,8 +6,8 @@ def _input_refGTF(wildcards):
 #         bam = TARGETS['samtools_sort'],
 #         genome_gtf = _input_refGTF
 #     output:
-#         matrix = 'results/read_counts/featureCounts_allSamples_genecounts.tsv',
-#         summary = 'results/read_counts/featureCounts_allSamples_genecounts.tsv.summary'
+#         matrix = 'results/read_counts/featureCounts_allSamples_counts.transcripts.tsv',
+#         summary = 'results/read_counts/featureCounts_allSamples_counts.transcripts.tsv.summary'
 #     log: 
 #         'logs/featureCounts/count_matrix.log'
 #     conda:
@@ -27,16 +27,16 @@ def _input_refGTF(wildcards):
 #             -a {input.genome_gtf} -o {output.matrix} {input.bam} 2> {log} 
 #         """
 
-rule featurecounts_gene:
+rule featurecounts_tx:
     input:
         filterBAM = 'results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sortn.filter.bam',
         genome_gtf = _input_refGTF
     output:
         report = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sortn.filter.bam.featureCounts',
-        matrix = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_genecounts.tsv',
-        summary = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_genecounts.tsv.summary'
+        matrix = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.transcripts.tsv',
+        summary = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.transcripts.tsv.summary'
     log: 
-        'logs/featureCounts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_genecounts.log'
+        'logs/featureCounts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.transcripts.log'
     conda:
         '../../envs/alignment/hisat3n.yaml'
     threads: 24
