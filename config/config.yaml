@@ -75,10 +75,10 @@ BAKR:
 
 BULLSEYE:
     MIN_COVERAGE:  10
-    MIN_EDIT_RATE:  5  # minimal editing rates
-    MAX_EDIT_RATE: 90  # maximal editing rates
+    MIN_EDIT_RATE:  10  # minimal editing rates
+    MAX_EDIT_RATE: 95  # maximal editing rates
     MIN_EDIT_FOLD_RATIO:  1.5  # minimal editing ratio over control sample
-    MIN_EDIT_SITES:  3  # minimal number of mutations for detection of site
+    MIN_EDIT_SITES:  2  # minimal number of mutations for detection of site
 
 RAC_FILTER: # For Patrick's window_rac_filter.py script
         WINDOW_SIZE: 0 # default= 0, help="How big the window should be. Use 0 for regular strict RAC filter.")
