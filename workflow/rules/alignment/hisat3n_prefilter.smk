@@ -27,19 +27,19 @@ def _params_for_hisat3n_align(wildcards):
 
 # --------- Rules ----------
 # evaluation after run does not work, outdir doesn't match
-rule get_filter_index:
-    output:
-        # directory('resources/external/index/hisat3n/gencode_{release}/{genome}.genome')
-        directory('resources/external/index/hisat3n/mouse_rDNA_BK000964-3')
-    log:
-        'logs/hisat3n/build/mouse_rDNA_BK000964-3_copy_index.log'
-    params:
-        source_dir = config['HISAT3N']['HISAT3N_FILTER_INDEX_PATH'],
-        copy_to_dir = INDEX_DIR
-    shell:
-        """
-            rsync -Pav {params.source_dir} {params.copy_to_dir} 2> {log}
-        """
+# rule get_filter_index:
+#     output:
+#         # directory('resources/external/index/hisat3n/gencode_{release}/{genome}.genome')
+#         directory('resources/external/index/hisat3n/mouse_rDNA_BK000964-3')
+#     log:
+#         'logs/hisat3n/build/mouse_rDNA_BK000964-3_copy_index.log'
+#     params:
+#         source_dir = config['HISAT3N']['HISAT3N_FILTER_INDEX_PATH'],
+#         copy_to_dir = INDEX_DIR
+#     shell:
+#         """
+#             rsync -Pav {params.source_dir} {params.copy_to_dir} 2> {log}
+#         """
 
 
 rule hisat3n_prefilter_align:
