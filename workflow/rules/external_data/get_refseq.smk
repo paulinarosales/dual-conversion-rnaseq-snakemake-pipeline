@@ -29,7 +29,7 @@ rule unzip_genome:
     input:
         rules.get_genome.output
     output:
-        temp('resources/external/gencode_{release}/{genome}.genome.fa')
+        'resources/external/gencode_{release}/{genome}.genome.fa'
     shell:
         """
              gzip -dc {input} > {output}
@@ -55,7 +55,7 @@ rule unzip_gft:
     input:
         rules.get_annotation.output
     output:
-        temp('resources/external/gencode_{release}/{genome}.annotation.gtf')
+        'resources/external/gencode_{release}/{genome}.annotation.gtf'
     shell:
         """
              gzip -dc {input} > {output}
