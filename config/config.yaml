@@ -1,5 +1,5 @@
 # --------------------------- Default file paths ---------------------------- #
-SAMPLE_MANIFEST: 'config/sample_manifest.tsv'
+SAMPLE_MANIFEST: 'config/sample_manifest_all.tsv'
 
 RESULTS_DIR: 'results'
 FIGURES_DIR: 'results/figures'
@@ -46,7 +46,7 @@ HISAT3N:
 # -- Align --
     # KM: 5
     STRANDNESS: 'RF' # --rna-strandnessK
-    ALIGN_EXTRA: '--directional-mapping'
+    ALIGN_EXTRA: '--directional-mapping-reverse --no-temp-splicesite' # 
 # -- Table --
     TABLE_EXTRA: '--unique-only'
 
