@@ -78,6 +78,6 @@ rule bullseye_parse_cts_ctrl:
         'logs/bullseye/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_parse_sites_cts.log'
     threads: 12
     conda:
-        '../../envs/downstream/r-basic.yaml'
+        '../../../envs/downstream/r-basic.yaml'
     script:
-        '../../scripts/bullseye/parse_sites_cts.R'
+        '../../../scripts/bullseye/parse_sites_cts.R'

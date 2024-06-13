@@ -7,21 +7,24 @@ def _input_geneset(wildcards):
 rule nascent_genecounts:
     input:
         bakr_metaTSV = 'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.metadata.tsv',
-        feature_ctsTSV = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.transcripts.tsv',
-        tx_infoTSV = _input_transciptsInfo
-        # genesetTSV = _input_geneset
+        feature_ctsTSV = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.genes.tsv',
+        tx_infoTSV = _input_transciptsInfo,
+        genesetTSV = _input_geneset
     output:
-        nascent_ctsTSV = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.gene.nascent.tsv'
+        # nascent_tx_ctsTSV = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.transcripts.nascent.tsv',
+        nascent_gene_ctsTSV = 'results/counts/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.genes.nascent.tsv'
     log:
         'logs/count_tabs/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nascent_genecounts.log'
     params:
         # min_reads = config['NASCENT_GENECOUNTS']['MIN_TOTAL_READS'],
         min_conv = config['NASCENT_GENECOUNTS']['MIN_CONVERSIONS']
-    threads: 12
+    threads: 24
+    resources:
+        mem = '32G'
     conda:
-        '../../envs/downstream/r-basic.yaml'
+        '../../../envs/downstream/r-basic.yaml'
     script:
-        '../../scripts/quantification/nascent_genecounts.R'
+        '../../../scripts/quantification/nascent_genecounts.R'
 
 
 rule merge_cts:
@@ -36,9 +39,9 @@ rule merge_cts:
         min_reads_th = config['NASCENT_GENECOUNTS']['MIN_TOTAL_READS']
     threads: 12
     conda:
-        '../../envs/downstream/r-basic.yaml'
+        '../../../envs/downstream/r-basic.yaml'
     script:
-        '../../scripts/quantification/merge_nascent_cts.R'
+        '../../../scripts/quantification/merge_nascent_cts.R'
 
 rule nascent_content:
     input:
@@ -49,9 +52,9 @@ rule nascent_content:
         'logs/count_tabs/all_samples/nascent_reads_content.log'
     threads: 12
     conda:
-        '../../envs/downstream/r-basic.yaml'
+        '../../../envs/downstream/r-basic.yaml'
     script:
-        '../../scripts/quantification/nascent_percentage.R'
+        '../../../scripts/quantification/nascent_percentage.R'
 
 
 # rule m6a_content:
@@ -63,6 +66,6 @@ rule nascent_content:
 #         'logs/count_tabs/all_samples/nascent_reads_content.log'
 #     threads: 12
 #     conda:
-#         '../../envs/downstream/r-basic.yaml'
+#         '../../../envs/downstream/r-basic.yaml'
 #     script:
-#         '../../scripts/quantification/nascent_percentage.R'
+#         '../../../scripts/quantification/nascent_percentage.R'

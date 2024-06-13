@@ -5,6 +5,8 @@ def _input_refGenome(wildcards):
 def _input_refFlat(wildcards):
     return expand('resources/external/gencode_{release}/{genome}.annotation.refFlat', release=GENCODE_RELEASE, genome=GENOME) # de-compressed
 
+def _input_geneBED(wildcards):
+    return expand('resources/external/gencode_{release}/{genome}.gene.bed', release=GENCODE_RELEASE, genome=GENOME)
 
 
 rule bullseye_parseBAM:
@@ -40,7 +42,9 @@ rule bullseye_gtf2genepred:
     shell:
         """
              perl workflow/scripts/bullseye/gtf2genepred.pl --gtf {input} --out {output}
-        """        
+        """
+        
+                
 rule bullseye_findSite:
 # PENDING CHANGES: make the control mtx conditional
     input:
@@ -109,6 +113,41 @@ rule bullseye_parse_cts:
         'logs/bullseye/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_parse_sites_cts.log'
     threads: 12
     conda:
-        '../../envs/downstream/r-basic.yaml'
+        '../../../envs/downstream/r-basic.yaml'
     script:
-        '../../scripts/bullseye/parse_sites_cts.R'
+        '../../../scripts/bullseye/parse_sites_cts.R'
+
+
+rule bullseye_quantifySites:
+# PENDING CHANGES: make the control mtx conditional
+    input:
+        editMTX = 'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
+        genesBED = _input_geneBED
+    output:
+        'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.gene_counts.bed'
+    log:
+        'logs/bullseye/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_quant_edit_site.log'
+    params:
+ 	    minEdit =  config['BULLSEYE']['MIN_EDIT_RATE'],  # minimal editing rates
+ 	    maxEdit  = config['BULLSEYE']['MAX_EDIT_RATE'],  # maximal editing rates
+ 	    editedMinCov =  config['BULLSEYE']['MIN_COVERAGE'],  # 
+ 	    minEditSites =  config['BULLSEYE']['MIN_EDIT_SITES']  # minimal number of mutations for detection of site
+    threads: 32
+    conda:
+        'bullseye'
+    resources:
+        mem = '124G'
+    shell:
+        """
+            perl workflow/scripts/bullseye/quantify_sites.pl\
+                --bed {input.genesBED} \
+ 	            --EditedMatrix {input.editMTX} \
+ 	            --editType C2T \
+ 	            --minEdit {params.minEdit} \
+ 	            --maxEdit {params.maxEdit} \
+ 	            --EditedMinCoverage {params.editedMinCov} \
+ 	            --MinEditSites {params.minEditSites} \
+ 	            --cpu {threads} \
+ 	            --outfile {output} \
+ 	            --verbose &> {log}
+        """

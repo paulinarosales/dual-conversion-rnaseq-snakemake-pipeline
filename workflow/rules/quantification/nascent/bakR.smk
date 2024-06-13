@@ -17,11 +17,11 @@ rule bakR_mut_call:
         strandedness = config['BAKR']['STRANDEDNESS'] # default='F',choices=['F','R'] Is first read forward or reverse orientation? F = forward is the default
     threads: 32
     conda:
-        '../../envs/downstream/bakR.yaml'
+        '../../../envs/downstream/bakR.yaml'
     resources:
         mem = '124G'
     script:
-        '../../scripts/quantification/mut_call_bakR.py'
+        '../../../scripts/quantification/mut_call_bakR.py'
         
 
 
@@ -36,8 +36,8 @@ rule bakR_merge:
         'logs/bakR/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_merge_features.log'
     threads: 24
     resources:
-        mem = '64G'
+        mem = '120G'
     conda:
-        '../../envs/downstream/r-basic.yaml'
+        '../../../envs/downstream/r-basic.yaml'
     script:
-        '../../scripts/quantification/merge_features_and_muts.R'
+        '../../../scripts/quantification/merge_features_and_muts.R'

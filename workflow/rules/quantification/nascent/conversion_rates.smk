@@ -11,6 +11,6 @@ rule conv_rates:
     log:
         'logs/rates/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.log'
     conda:
-        '../../envs/downstream/r-basic.yaml'
+        '../../../envs/downstream/r-basic.yaml'
     script:
-        '../../scripts/quantification/conversion_rates.R'
+        '../../../scripts/quantification/conversion_rates.R'
