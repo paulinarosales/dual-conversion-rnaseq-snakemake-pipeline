@@ -53,12 +53,13 @@ HISAT3N:
 FEATURE_COUNTS:
     # COUNT_MODE: '--primary' #  --primary, −−fraction or -M
     FEATURE_TYPE: 'transcript'
-    ATTRIBUTE_TYPE: 'transcript_id'
+    ATTRIBUTE_TYPE: 'gene_id'
+    STRANDNESS: '2' # options:  0 (unstranded), 1 (stranded) and 2 (reversely stranded)
     EXTRA: '--primary'
     
 NASCENT_GENECOUNTS:
     MIN_TOTAL_READS: 10
-    MIN_CONVERSIONS: 2
+    MIN_CONVERSIONS: 1
     MERGE_COLUMNS: ['total_counts', 'nascent_counts', 'nascent_fraction']
 # --------------------------- Params for downstream analysis ---------------------------- #
 

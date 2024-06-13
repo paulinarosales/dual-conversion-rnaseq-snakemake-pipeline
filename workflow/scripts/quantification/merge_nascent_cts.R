@@ -27,7 +27,7 @@ sample_names <- basename(dirname(cts_files))
 merged_cts[sample_names] <- numeric(nrow(merged_cts))
 cat("\n")
 
-cat(paste0("Merging ", merge_col, " for all samples..."), sep="\n")
+cat("Merging total_counts for all samples...", sep="\n")
 # Merge rates from all samples
 for(i in 1:length(cts_files)) {
   #i = 1
@@ -35,17 +35,29 @@ for(i in 1:length(cts_files)) {
     sample_name <- sample_names[i]
     sample_cts <- read.table(sample_file, header = TRUE, sep = '\t')
 
-    merged_cts[[sample_name]] <- sample_cts[match(merged_cts$gene_id, sample_cts$gene_id), merge_col]
+    merged_cts[[sample_name]] <- sample_cts[match(merged_cts$gene_id, sample_cts$gene_id), "total_counts"]
 }
 cat("\n")
 
-merged_cts[is.na(merged_cts)] <- 0
+merged_cts[is.na(merged_cts)] <- 0  # drop NAs
+keep <- rowSums(merged_cts[,sample_names]) >= min_reads_th # get gene entries above the low read threshold for further filtering
 
-if(merge_col != "total_counts"){
-    min_reads_th <- 0
-    keep <- rowSums(merged_cts[,sample_names]) > min_reads_th
-}else{
-    keep <- rowSums(merged_cts[,sample_names]) >= min_reads_th
+if(merge_col != "total_counts"){    # if merge_col is not total_counts initialize merged_cts again (to ensure same filtering is used for all tables)
+    merged_cts <- read.table(genesetTSV, header = TRUE,  sep = '\t',  stringsAsFactors = FALSE) # initialize merged_cts with gene info
+    merged_cts[sample_names] <- numeric(nrow(merged_cts)) # ignore 
+
+    cat(paste0("Merging ", merge_col, " for all samples..."), sep="\n")
+    # Merge rates from all samples
+    for(i in 1:length(cts_files)) {
+      #i = 1
+        sample_file <- cts_files[i]
+        sample_name <- sample_names[i]
+        sample_cts <- read.table(sample_file, header = TRUE, sep = '\t')
+
+        merged_cts[[sample_name]] <- sample_cts[match(merged_cts$gene_id, sample_cts$gene_id), merge_col]
+    }
+    merged_cts[is.na(merged_cts)] <- 0  # drop NAs
+    cat("\n")
 }
 
 cat(paste("Filtering out gene entries with <", min_reads_th, "total reads across samples."), sep="\n")
