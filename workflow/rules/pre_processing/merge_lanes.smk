@@ -1,6 +1,7 @@
 def _input_merge_fq(wildcards):
     sample_type = wildcards.sample_type
     treatment = wildcards.treatment
+    chase_time_h = wildcards.chase_time_h
     bio_rep = wildcards.bio_rep
     
     identifier = SAMPLES.loc[(sample_type, treatment, chase_time_h, bio_rep), 'Identifier']
