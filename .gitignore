@@ -1,8 +1,13 @@
 config/*.pdf
+config/*.tsv
 results/
+results_before/
 resources/
 reports/
 logs/
 joblogs/
+joblogs_before/
 profiles/
 .snakemake
+*.txt
+logs_before/

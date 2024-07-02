@@ -53,7 +53,6 @@ HISAT3N:
 FEATURE_COUNTS:
     # COUNT_MODE: '--primary' #  --primary, −−fraction or -M
     FEATURE_TYPE: 'transcript'
-    ATTRIBUTE_TYPE: 'gene_id'
     STRANDNESS: '2' # options:  0 (unstranded), 1 (stranded) and 2 (reversely stranded)
     EXTRA: '--primary'
     
@@ -85,3 +84,7 @@ BULLSEYE:
 RAC_FILTER: # For Patrick's window_rac_filter.py script
         WINDOW_SIZE: 0 # default= 0, help="How big the window should be. Use 0 for regular strict RAC filter.")
         ADAPT_COORDS: 'True' # default=True, help="Whether we should switch coordinates to A in RAC motif")
+
+# --------------------------- Figures ---------------------------- #
+TIME_LINEPLOTS:
+    GENES: ['Baz2a', 'Nelfa', 'Glrx3', 'Zscan4d', 'Sox2', 'Gapdh']
