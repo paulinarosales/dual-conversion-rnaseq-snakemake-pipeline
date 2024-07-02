@@ -81,7 +81,7 @@ rates_p <- ggplot(rates_t, aes(x=class,y=values,fill=highlight,col=highlight)) +
                 geom_boxplot(outlier.shape = NA,lwd=0.8,fatten=2) + 
                 facet_grid(~group, scales="free", space="free") + 
                 xlab("") + 
-                ylab("Mutation rate per transcript base [%]") +
+                ylab("Mutation rate per gene base [%]") +
 		scale_fill_manual(values=c("white","white")) + 
                 scale_color_manual(values=c("black", "red")) + 
                 theme(axis.ticks.x = element_blank(), legend.position = "none") + 

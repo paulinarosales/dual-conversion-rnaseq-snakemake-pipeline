@@ -11,12 +11,13 @@ suppressPackageStartupMessages({
 
 # ---------- Snakemake parsing ---------- #
 collapsedTSV <- snakemake@input[["collapsedTSV"]]
-transcriptBED <- snakemake@input[["transcriptBED"]]
+genesetTSV <- snakemake@input[["genesetTSV"]]
+
 globalTSV <- snakemake@output[["globalTSV"]]
-txTSV <- snakemake@output[["txTSV"]]
+geneTSV <- snakemake@output[["geneTSV"]]
 
 # ---------- Functions ---------- #
-computeTxRates <- function(tx_rates_tab, ref_base) {
+computeRates <- function(gene_rates_tab, ref_base) {
         cat(paste("Calculating conversion rates for mutations of", ref_base, "as reference base..."), sep="\n")
         base_content <- paste0("n", ref_base)
         regex <- paste0("^", ref_base, "_")
@@ -36,10 +37,10 @@ cat("Reading input data...", sep="\n")
 collapsed_conv <- read.table(collapsedTSV, header = TRUE, sep = "\t")
 # collapsed_conv <- collapsed_conv %>% select(-ends_with("_N"))
 
-tx_info <- read.table(transcriptBED, header = TRUE, sep = "\t")
-rownames(tx_info) <- tx_info$transcript_id
+geneset <- read.table(genesetTSV, header = TRUE, sep = "\t")
+rownames(geneset) <- geneset$gene_id
 
-tx_rates_tab <- tx_info[collapsed_conv$GF,]
+gene_rates_tab <- geneset[collapsed_conv$GF,]
 global_rates <- structure(numeric(12), names=c("T_A", "C_A", "G_A",                                                 
                                                 "A_T", "C_T", "G_T", 
                                                 "A_C", "T_C", "G_C", 
@@ -77,23 +78,23 @@ cat("\n\n")
 
 
 cat("Starting with INDIVIDUAL RATES:", sep="\n")
-cat("Merging transcript counts assignment with conversion counts...", sep="\n")
+cat("Merging gene counts assignment with conversion counts...", sep="\n")
 ref_code <- c("A", "T", "G", "C") # ignore Ns
 for(ref_base in ref_code){
-        n_rates_tab <- computeTxRates(tx_rates_tab, ref_base)
-        tx_rates_tab <- cbind(tx_rates_tab, n_rates_tab)
+        n_rates_tab <- computeRates(gene_rates_tab, ref_base)
+        gene_rates_tab <- cbind(gene_rates_tab, n_rates_tab)
 }
 cat("\n")
 
 cat("Removing entries with no conversions...", sep="\n")
-print(nrow(tx_rates_tab))
-tx_rates_tab <- tx_rates_tab[rowSums(tx_rates_tab[,(ncol(tx_rates_tab)-15):ncol(tx_rates_tab)]) > 0,] # select only cols with the conversion rates
-print(nrow(tx_rates_tab))
+print(nrow(gene_rates_tab))
+gene_rates_tab <- gene_rates_tab[rowSums(gene_rates_tab[,(ncol(gene_rates_tab)-15):ncol(gene_rates_tab)]) > 0,] # select only cols with the conversion rates
+print(nrow(gene_rates_tab))
 cat("\n")
 
-cat(paste0("Saving outputs:\n\t- ", globalTSV, "\n\t- ", txTSV), sep="\n")
+cat(paste0("Saving outputs:\n\t- ", globalTSV, "\n\t- ", geneTSV), sep="\n")
 write.table(global_rates, file = globalTSV, row.names= FALSE, quote = FALSE, sep = "\t")
-write.table(tx_rates_tab, file = txTSV, row.names= FALSE, quote = FALSE, sep = "\t")
+write.table(gene_rates_tab, file = geneTSV, row.names= FALSE, quote = FALSE, sep = "\t")
 cat("\n")
 
 cat("DONE!", sep="\n")

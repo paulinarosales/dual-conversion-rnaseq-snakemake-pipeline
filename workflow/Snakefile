@@ -93,8 +93,11 @@ TARGETS = {# -- Raw procesing
             'samtools_stats': [],
             'hisat3n_tab': [],
             'bakR': [],
+'bakR_meta': [],
             'bullseye': [],
+            'bullseye_summary': [],
             'bullseye_ctrl': [],
+            'bullseye_summary_ctrl': [],
             'featureCounts': [],
             'nascent_cts': [],
             'global_conv_rates': [],
@@ -143,14 +146,24 @@ for sample_type, treatment, chase_time_h, bio_rep in SAMPLES.index:
             TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.idxstats'))
             TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.flagstat'))
             TARGETS['samtools_stats'].append(str(RESULTS_DIR / 'quality_control' / 'samtools' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.coverage'))
-            TARGETS['featureCounts'].append(str(RESULTS_DIR / 'counts' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.transcripts.tsv'))
-            TARGETS['nascent_cts'].append(str(RESULTS_DIR / 'counts' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.gene.nascent.tsv'))
+        TARGETS['featureCounts'].append(str(RESULTS_DIR / 'counts' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.genes.tsv'))
+        TARGETS['nascent_cts'].append(str(RESULTS_DIR / 'counts' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_counts.genes.nascent.tsv'))
             TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.tsv'))
-            TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.metadata.tsv'))
-            TARGETS['bakR'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.transcripts.tsv'))
+        TARGETS['bakR_meta'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.metadata.tsv'))
+        TARGETS['bakR_meta'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionCounts.genes.tsv'))
             TARGETS['global_conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.global.tsv'))
-            TARGETS['conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.transcripts.tsv'))
-            TARGETS['bullseye'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz'))
+        TARGETS['conv_rates'].append(str(RESULTS_DIR / 'conversion_tables' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.genes.tsv'))
+        # TARGETS['m6a_counts'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.counts.tsv'))
+        # --------- Figures
+        TARGETS['figures'].append(str(FIGURES_DIR / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_conversionRates.pdf'))
+        TARGETS['figures'].append(str(FIGURES_DIR / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nascent_fraction_vs_halflife_scatter.pdf'))
+        # TARGETS['figures'].append(str( FIGURES_DIR / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_T_C_conv_per_read_histogram.pdf'))
+        # TARGETS['figures'].append(str( FIGURES_DIR / 'conversions' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nascent_fraction_vs_conv_hist.pdf'))
+        # TARGETS['figures'].append(str(FIGURES_DIR / 'm6a_sites' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_venn.pdf'))
+        # TARGETS['figures'].append(str(FIGURES_DIR / 'm6a_sites' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_correlation.pdf'))
+        
+        if treatment != 'A3-plp':
+            TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz'))
             TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.bed'))
             TARGETS['bullseye'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.RAC.bed'))
             # TARGETS['m6a_counts'].append(str(RESULTS_DIR / 'site_calling' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}' / f'{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.counts.tsv'))
@@ -231,8 +244,9 @@ rule all:
     input:
         # TARGETS['figures'],
         TARGETS['bullseye_ctrl'],
-        TARGETS['nascent_cts'],
-        TARGETS['count_mtx'],
+        TARGETS['bullseye'],
+        # TARGETS['nascent_cts'],
+        # TARGETS['count_mtx'],
         TARGETS['summary_tabs'],
         str(REPORT_DIR / 'multiqc')
     default_target: True
