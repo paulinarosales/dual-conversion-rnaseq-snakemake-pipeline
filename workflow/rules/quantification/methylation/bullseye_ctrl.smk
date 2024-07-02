@@ -11,8 +11,10 @@ def _input_refFlat(wildcards):
 rule bullseye_findSite_ctrl:
 # PENDING CHANGES: make the control mtx conditional
     input:
-        editMTX = 'results/conversion_tables/{sample_type}_APOBEC1-YTH-wt_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_APOBEC1-YTH-wt_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
-        controlMTX = 'results/conversion_tables/{sample_type}_APOBEC1-YTH-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_APOBEC1-YTH-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
+        editMTX = 'results/site_calling/{sample_type}_APOBEC1-YTH-wt_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_APOBEC1-YTH-wt_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
+        controlMTX = 'results/site_calling/{sample_type}_APOBEC1-YTH-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_APOBEC1-YTH-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
+        edit_c2t_snpsBED = 'results/snps/{sample_type}_APOBEC1-YTH-wt_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_APOBEC1-YTH-wt_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.snp.c2t.bed',
+        control_c2t_snpsBED = 'results/snps/{sample_type}_APOBEC1-YTH-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_APOBEC1-YTH-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.snp.c2t.bed',
         refGenome = _input_refGenome,
         refFlatGTF = _input_refFlat
     output:
@@ -35,6 +37,8 @@ rule bullseye_findSite_ctrl:
                 --annotationFile {input.refFlatGTF} \
  	            --EditedMatrix {input.editMTX} \
  	            --controlMatrix  {input.controlMTX} \
+                --filterBed {input.edit_c2t_snpsBED} \
+                --filterBed {input.control_c2t_snpsBED} \
  	            --minEdit {params.minEdit} \
  	            --maxEdit {params.maxEdit} \
  	            --editFoldThreshold {params.editFoldThreshold} \
@@ -73,7 +77,8 @@ rule bullseye_parse_cts_ctrl:
         'results/site_calling/against_control/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.RAC.bed'
     output:
         parsedTSV = 'results/site_calling/against_control/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.counts.tsv',
-        geneListTSV = 'results/site_calling/against_control/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.geneList.tsv'
+        geneListTSV = 'results/site_calling/against_control/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.geneList.tsv',
+        summaryTSV = 'results/site_calling/against_control/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.summary.tsv'
     log:
         'logs/bullseye/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_parse_sites_cts.log'
     threads: 12

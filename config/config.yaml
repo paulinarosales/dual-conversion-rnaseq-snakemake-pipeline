@@ -76,6 +76,7 @@ BAKR:
 
 BULLSEYE:
     MIN_COVERAGE:  10
+    PARSE_EXTRA: '--stranded'
     MIN_EDIT_RATE:  10  # minimal editing rates
     MAX_EDIT_RATE: 95  # maximal editing rates
     MIN_EDIT_FOLD_RATIO:  1.5  # minimal editing ratio over control sample

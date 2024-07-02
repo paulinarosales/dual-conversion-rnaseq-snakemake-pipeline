@@ -13,12 +13,13 @@ rule bullseye_parseBAM:
     input:
         'results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam'
     output:
-        'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz'
+        'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz'
     log:
         'logs/bullseye/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_parseBAM.log'
     params:
-        output_basename = 'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix',
-        minCov = config['BULLSEYE']['MIN_COVERAGE']
+        output_basename = 'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix',
+        minCov = config['BULLSEYE']['MIN_COVERAGE'],
+        extra = config['BULLSEYE']['PARSE_EXTRA']
     threads: 32
     conda:
         'bullseye'
@@ -26,7 +27,10 @@ rule bullseye_parseBAM:
         mem = '124G'
     shell:
         """
-             perl workflow/scripts/bullseye/parseBAM.pl --input {input} --output {params.output_basename} --minCoverage {params.minCov} --removeDuplicates --verbose &> {log}
+             perl workflow/scripts/bullseye/parseBAM.pl --input {input}\
+             --output {params.output_basename} --minCoverage {params.minCov}\
+             --removeDuplicates --removeMultiMapped {params.extra}\
+             --verbose &> {log}
         """
         
 
@@ -48,7 +52,8 @@ rule bullseye_gtf2genepred:
 rule bullseye_findSite:
 # PENDING CHANGES: make the control mtx conditional
     input:
-        editMTX = 'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
+        editMTX = 'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
+        c2t_snpsBED = 'results/snps/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.snp.c2t.bed',
         refGenome = _input_refGenome,
         refFlatGTF = _input_refFlat
     output:
@@ -71,6 +76,7 @@ rule bullseye_findSite:
                 --annotationFile {input.refFlatGTF} \
  	            --EditedMatrix {input.editMTX} \
  	            -g {input.refGenome} \
+                --filterBed {input.c2t_snpsBED} \
  	            --minEdit {params.minEdit} \
  	            --maxEdit {params.maxEdit} \
  	            --editFoldThreshold {params.editFoldThreshold} \
@@ -82,7 +88,7 @@ rule bullseye_findSite:
 
 rule bullseye_RACfilter:
     input:
-        sitesBED = 'results/site_calling/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_wt-vs-mut_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.bed',
+        sitesBED = 'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.bed',
         refGenome = _input_refGenome
     output:
         'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.RAC.bed'
@@ -108,7 +114,8 @@ rule bullseye_parse_cts:
         'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.RAC.bed'
     output:
         parsedTSV = 'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.counts.tsv',
-        geneListTSV = 'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.geneList.tsv'
+        geneListTSV = 'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.geneList.tsv',
+        summaryTSV = 'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.summary.tsv'
     log:
         'logs/bullseye/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_parse_sites_cts.log'
     threads: 12
@@ -117,37 +124,51 @@ rule bullseye_parse_cts:
     script:
         '../../../scripts/bullseye/parse_sites_cts.R'
 
-
-rule bullseye_quantifySites:
-# PENDING CHANGES: make the control mtx conditional
+rule merge_met_summary:
     input:
-        editMTX = 'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
-        genesBED = _input_geneBED
+        TARGETS['bullseye_summary']
     output:
-        'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.gene_counts.bed'
+        'results/site_calling/all_samples/m6A_sites_summary.tsv'
     log:
-        'logs/bullseye/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_quant_edit_site.log'
-    params:
- 	    minEdit =  config['BULLSEYE']['MIN_EDIT_RATE'],  # minimal editing rates
- 	    maxEdit  = config['BULLSEYE']['MAX_EDIT_RATE'],  # maximal editing rates
- 	    editedMinCov =  config['BULLSEYE']['MIN_COVERAGE'],  # 
- 	    minEditSites =  config['BULLSEYE']['MIN_EDIT_SITES']  # minimal number of mutations for detection of site
-    threads: 32
-    conda:
-        'bullseye'
-    resources:
-        mem = '124G'
+        'logs/bullseye/m6A_sites_summary.log'
+    threads: 12
     shell:
         """
-            perl workflow/scripts/bullseye/quantify_sites.pl\
-                --bed {input.genesBED} \
- 	            --EditedMatrix {input.editMTX} \
- 	            --editType C2T \
- 	            --minEdit {params.minEdit} \
- 	            --maxEdit {params.maxEdit} \
- 	            --EditedMinCoverage {params.editedMinCov} \
- 	            --MinEditSites {params.minEditSites} \
- 	            --cpu {threads} \
- 	            --outfile {output} \
- 	            --verbose &> {log}
+            cat {input} > {output} &&\
+            sed  -i '1i\Sample\tN_sites\tN_met_genes\tFract_sites_gene' {output} 
         """
+        
+
+# rule bullseye_quantifySites:
+# # PENDING CHANGES: make the control mtx conditional
+#     input:
+#         editMTX = 'results/conversion_tables/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_nucContent_byPos.matrix.gz',
+#         genesBED = _input_geneBED
+#     output:
+#         'results/site_calling/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_m6A_sites.gene_counts.bed'
+#     log:
+#         'logs/bullseye/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_quant_edit_site.log'
+#     params:
+#  	    minEdit =  config['BULLSEYE']['MIN_EDIT_RATE'],  # minimal editing rates
+#  	    maxEdit  = config['BULLSEYE']['MAX_EDIT_RATE'],  # maximal editing rates
+#  	    editedMinCov =  config['BULLSEYE']['MIN_COVERAGE'],  # 
+#  	    minEditSites =  config['BULLSEYE']['MIN_EDIT_SITES']  # minimal number of mutations for detection of site
+#     threads: 32
+#     conda:
+#         'bullseye'
+#     resources:
+#         mem = '124G'
+#     shell:
+#         """
+#             perl workflow/scripts/bullseye/quantify_sites.pl\
+#                 --bed {input.genesBED} \
+#  	            --EditedMatrix {input.editMTX} \
+#  	            --editType C2T \
+#  	            --minEdit {params.minEdit} \
+#  	            --maxEdit {params.maxEdit} \
+#  	            --EditedMinCoverage {params.editedMinCov} \
+#  	            --MinEditSites {params.minEditSites} \
+#  	            --cpu {threads} \
+#  	            --outfile {output} \
+#  	            --verbose &> {log}
+#         """

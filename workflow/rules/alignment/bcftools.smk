@@ -2,18 +2,18 @@
 def _input_refGenome(wildcards):
     return expand('resources/external/gencode_{release}/{genome}.genome.fa', release=GENCODE_RELEASE, genome=GENOME) # de-compressed
 
-def _input_control_sortedSAMs(wildcards):
-    sample_type = wildcards.sample_type
-    treatment = wildcards.treatment
-    bio_rep = wildcards.bio_rep
+# def _input_control_sortedSAMs(wildcards):
+#     sample_type = wildcards.sample_type
+#     treatment = wildcards.treatment
+#     bio_rep = wildcards.bio_rep
 
-    sortedBAM = []
-    sortedBAI = []
+#     sortedBAM = []
+#     sortedBAI = []
 
-    if SAMPLES.loc[(sample_type, treatment, bio_rep), "Control"] == 1: 
-        sortedBAM.append(f'results/sam_files/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam')
-        sortedBAIappend(f'results/sam_files/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam.bai')
-    return [] # de-compressed
+#     if SAMPLES.loc[(sample_type, treatment, bio_rep), "Control"] == 1: 
+#         sortedBAM.append(f'results/sam_files/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam')
+#         sortedBAIappend(f'results/sam_files/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam.bai')
+#     return [] # de-compressed
 
 
 
@@ -21,11 +21,11 @@ def _input_control_sortedSAMs(wildcards):
 rule bcftools_snp:
     input:
         refGenome = _input_refGenome,
-        sortBAM = 'results/sam_files/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam'
+        sortBAM = 'results/sam_files/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.hisat3n_align.sort.bam'
     output:
-        'results/snps/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}.snp.vcf'
+        'results/snps/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.snp.vcf'
     log:
-        'logs/bcftools/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_snp_call.log'
+        'logs/bcftools/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_snp_call.log'
     params:
         ploidy = config['BCFTOOLS']['PLOIDY'],
         min_qual = config['BCFTOOLS']['MIN_QUAL'],
@@ -42,11 +42,11 @@ rule bcftools_snp:
 
 rule parse_snp_txt:
     input:
-        'results/snps/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}.snp.vcf'
+        'results/snps/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.snp.vcf'
     output:
-        'results/snps/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}.snp.txt'
+        'results/snps/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.snp.txt'
     log:
-        'logs/bcftools/{sample_type}_{treatment}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Bio-rep_{bio_rep}_snp_parse.log'
+        'logs/bcftools/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_snp_parse.log'
     conda:
         '../../envs/alignment/hisat3n.yaml'
     shell:
@@ -59,3 +59,17 @@ rule parse_snp_txt:
             sort |\
             uniq > {output} 2> {log}
         """
+
+
+rule parse_snp_bed:
+    input:
+        'results/snps/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.snp.txt'
+    output:
+        'results/snps/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}.snp.c2t.bed'
+    log:
+        'logs/bcftools/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}/{sample_type}_{treatment}_Chase-time_{chase_time_h}_Bio-rep_{bio_rep}_snp_parse_c2t_bed.log'
+    threads: 12
+    conda:
+        '../../envs/downstream/r-basic.yaml'
+    script:
+        '../../scripts/bullseye/parse_snps_bed.R'
