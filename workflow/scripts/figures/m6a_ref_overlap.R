@@ -51,8 +51,9 @@ cat("\n")
 # ----- Venn diagrams
 cat("Identifying overlapping genes with m6A sites...", sep="\n")
 
-overlap_genes <- list(Ref = ref_genes$gene, 
+overlap_genes <- list(Ref = unique(ref_genes$gene), 
                       Sample = sites_t$gene)
+head(overlap_genes)
 
 cat("Ploting Venn Diagram...", sep="\n")
 p_venn <- ggvenn(overlap_genes, fill_color = pawlette[1:2],

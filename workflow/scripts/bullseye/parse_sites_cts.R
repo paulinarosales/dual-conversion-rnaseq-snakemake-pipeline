@@ -15,6 +15,7 @@ racTSV <- snakemake@input[[1]]
 
 parsedTSV <- snakemake@output[["parsedTSV"]]
 geneListTSV <- snakemake@output[["geneListTSV"]]
+summaryTSV <- snakemake@output[["summaryTSV"]]
 
 # ---------- Main code ---------- #
 
@@ -40,9 +41,12 @@ gene_tab$mut_count <- as.numeric(gene_tab$mut_count)
 gene_tab <-  aggregate(.~gene, data = gene_tab, FUN = sum)
 head(gene_tab)
 # colnames(gene_tab) <- c("gene", "mut_count")
+summary_tab <- data.frame("Sample" =  basename(dirname(summaryTSV)), "N_sites" =  sum(gene_tab$mut_count), "N_met_genes" = nrow(gene_tab))
+summary_tab$Fract_sites_gene <- summary_tab$N_sites/summary_tab$N_met_genes
 cat("\n")
 
 cat(paste0("Saving outputs:\n\t- ", parsedTSV), sep="\n")
 write.table(parse_tab, file=parsedTSV, sep="\t", quote=FALSE, row.names=FALSE)
 write.table(gene_tab, file=geneListTSV, sep="\t", quote=FALSE, row.names=FALSE)
+write.table(summary_tab, file=summaryTSV, sep="\t", quote=FALSE, row.names=FALSE, col.names=FALSE)
 cat("DONE!", sep="\n")
